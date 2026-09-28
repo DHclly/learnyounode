@@ -1,33 +1,35 @@
-编写一个 **TCP 时间服务器**
+创建一个名为 `time-server.js` 的文件。
 
-你的服务器应当监听一个端口，以获取一些 TCP 连接，这个端口会经由第一个命令行参数传递给你的程序。针对每一个 TCP 连接，你都必须写入当前的日期和24小时制的时间，如下格式：
+编写一个 **TCP 时间服务器**！
+
+你的服务器应该监听程序的第一个参数所提供的端口上的 TCP 连接。对每个连接，你必须按以下格式写入当前日期和 24 小时制时间：
 
 ```
 "YYYY-MM-DD hh:mm"
 ```
 
-然后紧接着是一个换行符。
-
-月份、日、小时和分钟必须*用零填充*成为固定的两位数：
+后面再跟一个**换行符**。月、日、小时和分钟都必须*补零*到 2 位整数。例如：
 
 ```
 "2013-07-06 17:42"
 ```
 
+发送完这个字符串后，关闭连接。
+
 ----------------------------------------------------------------------
 ## 提示
 
-这次练习中，我们将会创建一个 TCP 服务器。这里将不会涉及到任何 HTTP 的事情，因此我们只需使用 `net` 这个 Node 核心模块就可以了。它包含了所有的基础网络功能。
+这道练习中，我们将创建一个原始 TCP 服务器。这里不涉及 HTTP，所以我们需要使用 Node 核心中具备所有基础网络功能的 `net` 模块。
 
-`net` 模块拥有一个名叫 `net.createServer()` 的方法，它会接收一个回调函数。和 Node 中其他的回调函数不同，`createServer()` 所用的回调函数将会被调用多次。你的服务器每收到一个 TCP 连接，都会调用一次这个回调函数。这个回调函数有如下特征：
+`net` 模块有一个名为 `net.createServer()` 的方法，它接收一个函数。你需要传给 `net.createServer()` 的函数是一个连接监听器，它会被调用不止一次。你的服务器每收到一个连接就会再次调用这个监听器。这个监听器函数的签名是：
 
 ```js
-function callback (socket) { /* ... */ }
+function listener (socket) { /* ... */ }
 ```
 
-`net.createServer()` 也会返回一个 TCP 服务器的实例，你必须调用 `server.listen(portNumber)` 来让你的服务器开始监听一个特定的端口。
+`net.createServer()` 还会返回一个你的 `server` 实例。你必须调用 `server.listen(portNumber)` 来开始监听某个特定端口。
 
-一个典型的 Node TCP 服务器将会如下所示：
+一个典型的 Node TCP 服务器看起来像这样：
 
 ```js
 const net = require('net')
@@ -37,24 +39,30 @@ const server = net.createServer(function (socket) {
 server.listen(8000)
 ```
 
-记住，请一定监听由第一个命令行参数指定的端口。
+记得使用作为第一个命令行参数提供给你的端口号。
 
-`socket` 对象包含了很多关于各个连接的信息（meta-data），但是它也同时是一个 Node 双工流（duplex Stream），所以，它既可以读，也可以写。对这个练习来说，我们只需要对 socket 写数据和关闭它就可以了。
+`socket` 对象包含许多关于该连接的元数据，但它同时也是一个 Node 双工 Stream，也就是说它既可读也可写。对这道练习，我们只需要写入数据然后关闭 socket。
 
-使用  `socket.write(data)` 可以写数据到 socket 中，用  `socket.end()` 可以关闭一个 socket。另外， `.end()` 方法也可以接收一个数据对象作为参数，因此，你可简单地使用 `socket.end(data)` 来完成写数据和关闭两个操作。
+用 `socket.write(data)` 把数据写入 socket，用 `socket.end()` 关闭 socket。另外，`.end()` 方法也可以接收一个数据对象，所以你可以简化为：`socket.end(data)`。
 
-`net` 模块的文档可以通过浏览器访问如下连接来查看：
+`net` 模块的文档可以通过浏览器访问以下地址来查看：
 
   {rootdir:/docs-nodejs/net.html}
 
-要创建一个日期，你需要使用 `new Date()` 并且自定义一个格式，这些方法将会很有用：
+要创建日期，你需要基于 `new Date()` 对象自定义一个格式。会用到的这些方法有：
 
 ```js
 date.getFullYear()
 date.getMonth() // 从 0 开始
-date.getDate() // 返回当前月的日期
+date.getDate() // 返回当月第几天
 date.getHours()
 date.getMinutes()
 ```
 
-或者，如果你喜欢尝鲜的话，可以使用  `strftime` 这个模块。其中 `strftime(fmt, date)` 这个方法可以接收一个和 unix 命令 `date` 相似的时间日期格式。你可以在这里查看更多关于 strftime 的信息：https://github.com/samsonjs/strftime
+或者，如果你想大胆一点，可以使用 npm 的 `strftime` 包。`strftime(fmt, date)` 函数接收的日期格式与 unix 的 `date` 命令相同。你可以在以下地址了解更多关于 strftime 的信息：https://github.com/samsonjs/strftime
+
+运行下面的命令来检查你的程序是否正确：
+
+```sh
+$ {appname} verify time-server.js
+```
