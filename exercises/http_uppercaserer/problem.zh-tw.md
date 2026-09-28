@@ -1,15 +1,17 @@
-撰寫一個只能接收 POST 請求的 HTTP 伺服器，這個伺服器會把收到的 POST 內容字元轉換成大寫，並回應給客戶端。
+建立一個名為 `http-uppercaserer.js` 的檔案。
 
-您的伺服器應該監聽在第一個參數所給予的 port 上。
+撰寫一個 HTTP **伺服器**，它只接收 POST 請求，把收到的 POST 內容字元轉換成大寫，並回應給客戶端。
+
+你的伺服器應該監聽程式第一個參數所提供的連接埠。
 
 ----------------------------------------------------------------------
 ## 提示
 
-不受限的使用 `request` 及 `response` 物件的串流能力，這個習題會更簡單一點。
+雖然並不限制你使用 `request` 和 `response` 物件的串流能力，但如果使用它們會簡單得多。
 
-有兩個不同的 npm 套件可以被用來 **「轉換」** 傳入的串流資料。在這個習題中， `through2-map` 套件提供最簡單的 API。
+npm 中有許多不同的套件，你可以在串流資料通過時用它來*"轉換"*資料。這道練習中，`through2-map` 套件提供了最簡單的 API。
 
-`through2-map` 允許您只用一個傳入、回應一堆資料的簡單的函式建立一個 *transform stream* 。 *transform stream* 指的是會對資料進行處理或運算的串流，不是只有單純的 input/output，進去的資料會被處理過後才會輸出。 `through2-map` 這個套件可以對串流的傳輸內容做類似 `Array#map()` 的功能。
+`through2-map` 允許你只用一個函式就建立一個 *transform stream*，這個函式接收一塊資料並回傳一塊資料。它的設計運作方式很像 `Array#map()`，但針對的是串流：
 
 ```js
 const map = require('through2-map')
@@ -18,18 +20,24 @@ inStream.pipe(map(function (chunk) {
 })).pipe(outStream)
 ```
 
-在前面的例子中，從 `inStream` 傳入的資料被轉換成 String （如果還沒轉換的話）， 字元順序會被反轉，並把結果傳到 `outStream` 。所以我們必須先把一大堆字元反轉！記得資料的大小是取決於上游，而且您對這些傳入資料的控制權不大。
+在上面的例子中，來自 `inStream` 的傳入資料被轉換成字串（如果它還不是的話），字元順序被反轉，結果被傳送到 `outStream`。所以我們做了一個資料塊字元反轉器！不過請記住，資料塊的大小是由上游決定的，對傳入的資料你幾乎無法控制。
 
-要安裝 `through2-map` ，輸入：
+要安裝 `through2-map`，請輸入：
 
 ```sh
 $ npm install through2-map
 ```
 
-如果您沒有網路連線，可以簡單地建立一個 `node_modules` 目錄，並把 {appname} 安裝目錄下，您要用的套件目錄都複製到 `node_modules` 目錄當中。
+如果你沒有網路連線，只要建立一個 `node_modules` 目錄，然後從 {appname} 的安裝目錄中把你要用的套件的整個目錄複製過去：
 
   {rootdir:/node_modules/through2-map}
 
-要閱讀這跟著 {appname} 安裝到系統上的 through2-map 模組文件，可以在瀏覽器中打開這個頁面：
+through2-map 的文件已經隨 {appname} 安裝在你的系統上，你可以透過瀏覽器開啟以下網址來閱讀：
 
   {rootdir:/docs/through2-map.html}
+
+執行下面的命令來檢查你的程式是否正確：
+
+```sh
+$ {appname} verify http-uppercaserer.js
+```
