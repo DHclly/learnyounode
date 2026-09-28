@@ -1,10 +1,12 @@
-撰寫一個 HTTP **伺服器** ，當伺服器收到路徑「/api/parsetime」的 GET 請求時，要回應 JSON 格式的資料。這個請求會包含一個 query ， key 是「iso」，值是 ISO 格式的時間。
+建立一個名為 `http-json-api-server.js` 的檔案。
 
-如下例：
+撰寫一個 HTTP **伺服器**，當它收到發往路徑 '/api/parsetime' 的 GET 請求時，回應 JSON 資料。請預期這個請求會包含一個查詢字串，鍵為 'iso'，值為 ISO 格式的時間。
+
+例如：
 
   /api/parsetime?iso=2013-08-10T12:10:15.474Z
 
-回應的 JSON 應該只包含三個屬性：「hour」、「minute」及「second」。舉例來說：
+JSON 回應應該只包含 'hour'、'minute' 和 'second' 屬性。例如：
 
 ```json
 {
@@ -14,38 +16,43 @@
 }
 ```
 
-您還要加入第二個可以接受相同 query ，但這次在「unixtime」屬性下回應 UNIX 時間格式（又稱為 epoch 或 POSIX 時間格式）的路徑「/api/unixtime」。
+再加上第二個端點，路徑為 '/api/unixtime'，它接受相同的查詢字串，但在 'unixtime' 屬性下回傳 UNIX 紀元時間（自 1970 年 1 月 1 日 00:00:00 UTC 起的毫秒數）。例如：
 
 ```json
 { "unixtime": 1376136615474 }
 ```
 
-您的伺服器應該持續監聽在第一個參數提供的 port 上。
+你的伺服器應該監聽程式第一個參數所提供的連接埠。
 
 ----------------------------------------------------------------------
 ## 提示
 
-來自 HTTP 伺服器的 `request` 物件會擁有一個 `url` 屬性，您可以使用這個屬性判斷請求究竟是針對哪個路徑。
+HTTP 伺服器的 `request` 物件有一個 `url` 屬性，你需要用它來為這兩個端點*"路由"*你的請求。
 
-您可以使用 Node 核心模組 url 來解析 query 和網址。 `new URL(request.url)` 會解析 request.url 的內容，並提供您一個擁有好用屬性的物件。
+你可以使用 Node 核心的 'url' 模組來解析 URL 和查詢字串。`new URL(request.url)` 會解析 request.url 的內容，並給你一個帶有實用屬性的物件。
 
-舉例來說，在命令列中輸入：
+例如，在命令提示字元中輸入：
 
 ```sh
 $ node -pe "new URL('/test?q=1', 'http://example.com')"
 ```
 
-要閱讀 `url` 模組的文件，可以在瀏覽器中打開這個頁面：
-
-Documentation on the `url` module can be found by pointing your browser here:
+`url` 模組的文件可以透過瀏覽器開啟以下網址來閱讀：
   {rootdir:/docs-nodejs/url.html}
 
-您的回應應該是 JSON 格式。要了解更多資訊，可以參考 `JSON.stringify()` 。
+你的回應應該是 JSON 字串格式。更多資訊請參考 `JSON.stringify()`。
 
-您也應該做個網路上的好公民，回應 Content-Type 屬性：
+你也應該當個稱職的 Web 公民，正確設定 Content-Type：
 
 ```js
 res.writeHead(200, { 'Content-Type': 'application/json' })
 ```
 
-Javascript 的 `Date` 物件可以用 ISO 格式顯示日期，如 `new Date().toISOString()` 。如果您把日期字串傳入 `Date` 物件，這個物件也可以用來解析時間格式。 `Date.getTime()` 也可以派上用場。
+JavaScript 的 `Date` 物件可以以 ISO 格式印出日期，例如 `new Date().toISOString()`。如果你把字串傳進 `Date` 建構子，它也可以解析這種格式。`Date.getTime()` 同樣
+會派上用場。
+
+執行下面的命令來檢查你的程式是否正確：
+
+```sh
+$ {appname} verify http-json-api-server.js
+```
