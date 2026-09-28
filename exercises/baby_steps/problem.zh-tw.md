@@ -1,33 +1,38 @@
-撰寫一個可以印出命令列參數總和的程式。
+建立一個名為 `baby-steps.js` 的檔案。
+
+撰寫一個程式，接收一個或多個數字作為命令列參數，並把這些數字的總和印到終端機（標準輸出 stdout）。
 
 ----------------------------------------------------------------------
 ## 提示
 
-透過 global 的 `process` 物件，您可以存取到來自命令列的參數。 `process` 物件會把完整的命令列放到底下的 `argv` 屬性中，如 `process.argv` 。
+你可以透過全域物件 `process` 來存取命令列參數。`process` 物件有一個 `argv` 屬性，它是一個包含完整命令列的陣列，也就是 `process.argv`。
 
-請先撰寫一個單純包含底下命令的程式：
+為了起步，請先撰寫一個只包含以下內容的程式：
 
 ```js
 console.log(process.argv)
 ```
 
-在命令列中輸入 `node program.js` ，然後再後面多輸入幾個數字作為參數，如：
+用 `node baby-steps.js` 並在後面加上幾個數字作為參數來執行它，例如：
 
 ```sh
-$ node program.js 1 2 3
+$ node baby-steps.js 1 2 3
 ```
 
-在這個範例中，程式的輸出會像底下一樣，是一個 Array （數列）：
-
+在這種情況下，輸出會是類似下面這樣的陣列：
 
 ```js
-['node', '/path/to/your/program.js', '1', '2', '3']
+['node', '/path/to/your/baby-steps.js', '1', '2', '3']
 ```
 
-為了輸出這些參數的總和，您需要思考如何以迴圈的方式輪流存取這幾個參數。`process.argv` Array 的第一個元素永遠是「node」，而第二個元素也永遠是被執行的程式 `program.js` 的完整路徑，所以您需要從第三個元素（index 2）開始，依序加入來自命令列的參數，直到這個 Array 結束。
+你需要思考如何用迴圈逐一處理這些數字參數，以便只輸出它們的總和。`process.argv` 陣列的第一個元素永遠是 `'node'`，第二個元素永遠是你的 `baby-steps.js` 檔案的路徑，所以你必須從第 3 個元素（索引 2）開始，把每一項加進總和，直到陣列結束。
 
-要注意的是， `process.argv` 的所有元素都是字串（String），而您需要把它們 *轉換* 成數字（Number）。您可以在 `process.argv` 前加上 `+` 或是把這個屬性傳給函式 `Number()` 。如 `+process.argv[2]` 或 `Number(process.argv[2])` 。
+另外要注意，`process.argv` 的所有元素都是字串，你可能需要將它們*轉換*成數字。你可以用兩種方式做到：在屬性前面加上 `+`，或是把它傳給 `Number()`。例如 `+process.argv[2]` 或 `Number(process.argv[2])`。
 
-{appname} 將會在您執行 `{appname} verify program.js` 的時候加入參數，所以您不用自己加上。如果不想驗證程式，只想自己嘗試執行看看，可以在終端機中輸入 `{appname} run program.js` 並執行。當您使用 `run` 的方式執行程式的時候，您將會引入 {appname} 為每個作業所設定好的測試環境。
+執行下面的命令來檢查你的程式是否正確：
 
-----------------------------------------------------------------------
+```sh
+$ {appname} verify baby-steps.js
+```
+
+當你執行 `{appname} verify baby-steps.js` 時，{appname} 會為你的程式提供參數，所以你不需要自己提供。如果想在不驗證的情況下測試程式，可以用 `{appname} run baby-steps.js` 來執行它。當你使用 `run` 時，你用的是 {appname} 為每個練習架設的測試環境。
