@@ -1,39 +1,41 @@
-编写一个程序，发起一个 HTTP GET 请求，请求的 URL 为所提供给你的命令行参数的第一个。收集**所有**服务器所返回的数据（不仅仅包括 "data" 事件）然后在终端（标准输出 stdout）用两行打印出来。
+创建一个名为 `http-collect.js` 的文件。
 
-你所打印的内容，第一行应该是一个整数，用来表示你所收到的字符串内容长度，第二行则是服务器返回给你的完整的字符串结果。
+编写一个程序，向作为第一个命令行参数提供给你的 URL 发起一个 HTTP GET 请求。收集来自服务器的**所有**数据（不只是第一个 "data" 事件），然后向终端（标准输出 stdout）写入两行内容。
+
+你写出的第一行应该只是一个整数，表示从服务器收到的字符数。第二行应该包含服务器发送的完整字符串。
 
 ----------------------------------------------------------------------
 ## 提示
 
-你有两种解题方法：
+这道题有两种解法：
 
-**1)** 你可以把所有 "data" 事件所得的结果收集起来，暂存并追加在一起，而不是在收到后立刻打印出来。通过监听 "end" 事件，可以确定 stream 是否完成传输，如果传输结束了，你就可以将你收集到的结果打印出来了。
+**1)** 跨多个 "data" 事件收集数据，在打印输出之前把结果追加在一起。用 "end" 事件判断 stream 何时结束，此时你就可以写出输出。
 
-**2)** 使用一个第三方模块，来简化从 stream 中收集数据的繁琐步骤。这里有两个不同的模块都提供了一些有用的 API 来解决这个问题（似乎还有好多另外的模块可以选哦！）：`bl (Buffer list)` 或者 `concat-stream`，来选一个吧！
+**2)** 使用第三方包来屏蔽收集整个数据流的麻烦。有两个不同的包提供了解决这个问题的实用 API（很可能还有更多！）：`bl`（Buffer List）和 `concat-stream`；任选其一！
 
   <https://npmjs.com/bl>
   <https://npmjs.com/concat-stream>
 
-要安装一个 Node 模块，需用到 Node 的包管理工具 `npm`，输入：
+要安装 Node 包，请使用 Node 包管理器 `npm`。只需输入：
 
 ```sh
 $ npm install bl
 ```
 
-这样，相应的模块的最新版本便会被下载到当前目录下一个名为 `node_modules` 的子目录中。任何在这个子目录中的模块都可以简单地使用 `require` 语法来将模块载入到你的程序中，并且不需要加 `./` 这样的路径前缀，如下所示：
+它会把包的最新版本下载并安装到一个名为 `node_modules` 的子目录中。任何位于你主程序文件所在目录下这个子目录中的包，都可以用 `require` 语法加载，而不需要加上 './' 前缀：
 
 ```js
 const bl = require('bl')
 ```
 
-这里，Node 会先查找是否有这个名字的核心模块，如果没有，再查找在 `node_modules` 目录下是否有这个模块。
+Node 会先在核心模块中查找，然后才在包所在的 `node_modules` 目录中查找。
 
-如果你的设备没有联网，你可以简单地手工新建一个 `node_modules` 子目录，然后将你需要的模块从 {appname} 的安装目录中完整复制到 `node_modules` 中。在这里，上文提到的两个模块所在路径如下：
+如果你没有网络连接，只需创建一个 `node_modules` 目录，然后从 {appname} 的安装目录中把你要用的包的整个目录复制过去：
 
   {rootdir:/node_modules/bl}
   {rootdir:/node_modules/concat-stream}
 
-你可以把一个 stream *pipe* 到 `bl` 或 `concat-stream` 中去，它们会为你收集数据。一旦 stream 传输结束，一个回调函数会被执行，并且，这个回调函数会带上所收集的数据：
+`bl` 和 `concat-stream` 都可以让一个 stream *piped* 进去，然后它们会替你收集数据。当 stream 结束后，会带着数据触发一个回调函数：
 
 ```js
 response.pipe(bl(function (err, data) { /* ... */ }))
@@ -41,9 +43,15 @@ response.pipe(bl(function (err, data) { /* ... */ }))
 response.pipe(concatStream(function (data) { /* ... */ }))
 ```
 
-要注意的是你可能需要使用 `data.toString()` 来把 Buffer 转换为字符串。
+注意你可能需要用 `data.toString()` 把 Buffer 转换成字符串。
 
-这两个模块的文档已经随 {appname} 安装到你的系统中了，你可以使用浏览器访问并阅读它们：
+这两个模块的文档已经随 {appname} 安装在你的系统上，你可以通过浏览器访问以下地址来阅读它们：
 
   {rootdir:/docs/bl.html}
   {rootdir:/docs/concat-stream.html}
+
+运行下面的命令来检查你的程序是否正确：
+
+```sh
+$ {appname} verify http-collect.js
+```
