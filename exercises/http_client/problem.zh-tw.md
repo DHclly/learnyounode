@@ -1,27 +1,35 @@
-撰寫一個會對第一個參數所提供之URL（網址）發起 HTTP GET 請求（request）的程式。這個程式會把 **每個** 來自回應「data」事件的字串內容以新的一行顯示在終端機（標準輸出，stdout）上。
+建立一個名為 `http-client.js` 的檔案。
+
+撰寫一個程式，對第一個命令列參數所提供給你的 URL 發起一個 HTTP GET 請求。把回應中**每個** "data" 事件得到的字串內容，在終端機（標準輸出 stdout）上印成新的一行。
 
 ----------------------------------------------------------------------
 ## 提示
 
-在這個練習中，您將需要使用核心的 `http` 模組。
+在這個練習中，你需要使用 `http` 核心模組。
 
-要閱讀 `http` 模組的文件，可以在瀏覽器中打開這個頁面：
+`http` 模組的文件可以透過瀏覽器開啟以下網址來閱讀：
   {rootdir:/docs-nodejs/http.html}
 
-`http.get()` 方法可以發起一個簡單的 GET 請求，可以簡化您的解決方法。 `http.get()` 的第一個參數是您想要發起GET請求的URL，第二個參數是一個 callback 函式。
+`http.get()` 方法是發起簡單 GET 請求的快捷方式，用它來簡化你的解法。`http.get()` 的第一個參數可以是你想要 GET 的 URL；第二個參數傳入一個回呼函式。
 
-不像其他的 callback 函式，這個 callback 函式的語法如下：
+和其他回呼函式不同，這個回呼函式有這樣的簽名：
 
 ```js
 function callback (response) { /* ... */ }
 ```
 
-`response` 物件是一個 Node **Stream（串流）** 物件。您可以把 Node Streams 會發出事件（emit events）的物件來對待，其中最常被用到的三個事件是「data」、「error」及「end」。您可以以底下的方法傾聽（listen）事件：
+其中 `response` 物件是一個 Node 的 **Stream** 物件。你可以把 Node Stream 當成會發出事件的物件。最需要關注的三個事件是："data"、"error" 和 "end"。你可以像這樣監聽一個事件：
 
 ```js
 response.on('data', function (data) { /* ... */ })
 ```
 
-當有一批資料可以被處理的時候，「data」訊號將會被發出。這批資料的大小則視資料源所提供的資料而定。
+"data" 事件會在有一塊資料可供處理時被發出。這塊資料的大小取決於底層的資料來源。
 
-從 `http.get()` 所取得的 response 物件/Stream 同樣有一個 `setEncoding()` 方法。如果您呼叫這個方法並給予「utf8」的參數，「data」事件將會發出 String 以取代原先標準的 Node `Buffer` 物件，這樣您就不用特地把它轉換成 String 。
+你從 `http.get()` 取得的 `response` 物件 / Stream 也有一個 `setEncoding()` 方法。如果你用 "utf8" 呼叫這個方法，"data" 事件將會發出字串，而不是標準的 Node `Buffer` 物件——那種你必須顯式轉換成字串的物件。
+
+執行下面的命令來檢查你的程式是否正確：
+
+```sh
+$ {appname} verify http-client.js
+```
